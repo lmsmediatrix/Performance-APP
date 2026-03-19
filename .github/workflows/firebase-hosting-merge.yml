@@ -16,17 +16,22 @@ jobs:
   build_and_deploy_test:
     if: github.ref == 'refs/heads/test'
     runs-on: ubuntu-latest
+    env:
+      VITE_BASE_URL: https://ps-api-develop-cpn5wtzfia-as.a.run.app/api
+      VITE_LMS_BASE_URL: https://lms-api-develop-763972588311.asia-southeast1.run.app/api
     steps:
       - uses: actions/checkout@v3
       - name: Set environment variables
         run: |
-          echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL_TEST }}" >> .env
+          echo "VITE_BASE_URL=${{ env.VITE_BASE_URL }}" >> .env
+          echo "VITE_LMS_BASE_URL=${{ env.VITE_LMS_BASE_URL }}" >> .env
           echo "VITE_CLOUDINARY_PATH=${{ secrets.VITE_CLOUDINARY_PATH_TEST }}" >> .env
       - name: Build
         run: npm ci && npm run build
         env:
           CI: false
-          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL_TEST }}
+          VITE_BASE_URL: ${{ env.VITE_BASE_URL }}
+          VITE_LMS_BASE_URL: ${{ env.VITE_LMS_BASE_URL }}
           VITE_CLOUDINARY_PATH: ${{ secrets.VITE_CLOUDINARY_PATH_TEST }}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -38,17 +43,22 @@ jobs:
   build_and_deploy_dev:
     if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
+    env:
+      VITE_BASE_URL: https://ps-api-develop-cpn5wtzfia-as.a.run.app/api
+      VITE_LMS_BASE_URL: https://lms-api-develop-763972588311.asia-southeast1.run.app/api
     steps:
       - uses: actions/checkout@v3
       - name: Set environment variables
         run: |
-          echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL_DEV }}" >> .env
+          echo "VITE_BASE_URL=${{ env.VITE_BASE_URL }}" >> .env
+          echo "VITE_LMS_BASE_URL=${{ env.VITE_LMS_BASE_URL }}" >> .env
           echo "VITE_CLOUDINARY_PATH=${{ secrets.VITE_CLOUDINARY_PATH_DEV }}" >> .env
       - name: Build
         run: npm ci && npm run build
         env:
           CI: false
-          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL_DEV }}
+          VITE_BASE_URL: ${{ env.VITE_BASE_URL }}
+          VITE_LMS_BASE_URL: ${{ env.VITE_LMS_BASE_URL }}
           VITE_CLOUDINARY_PATH: ${{ secrets.VITE_CLOUDINARY_PATH_DEV }}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

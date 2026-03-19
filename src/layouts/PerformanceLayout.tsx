@@ -20,9 +20,12 @@ const NAV_ITEMS = [
   { label: "Reports", path: "/reports", icon: ChartBarIcon },
 ];
 
-const LMS_APP_URL = import.meta.env.VITE_LMS_APP_URL || "http://localhost:5173";
+const DEFAULT_LMS_APP_URL = "https://mediatrix-lms-app-dev.web.app";
+const LMS_APP_URL = import.meta.env.VITE_LMS_APP_URL || DEFAULT_LMS_APP_URL;
 
 const trimTrailingSlashes = (value: string) => value.replace(/\/+$/, "");
+const isLocalhostHost = (hostname: string) =>
+  hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
 
 const toAbsoluteUrl = (url: string) => {
   try {
@@ -77,7 +80,11 @@ export default function PerformanceLayout() {
 
     if (returnTo) {
       try {
-        return new URL(returnTo).toString();
+        const resolvedReturnTo = new URL(returnTo, `${lmsBaseUrl}/`);
+        if (isLocalhostHost(resolvedReturnTo.hostname)) {
+          return `${lmsBaseUrl}${resolvedReturnTo.pathname}${resolvedReturnTo.search}${resolvedReturnTo.hash}`;
+        }
+        return resolvedReturnTo.toString();
       } catch {
         const path = returnTo.startsWith("/") ? returnTo : `/${returnTo}`;
         return `${lmsBaseUrl}${path}`;

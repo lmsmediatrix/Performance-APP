@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "lms-app-test-bffd3",
+    "lms-app-test": "lms-app-test-bffd3"
+  },
+  "targets": {},
+  "etags": {}
+}

@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #3E5B93; /* Default value */
+  --color-secondary: #228AB9;
+  --color-accent: #C0DB70;
+  --color-light: #f8f9fa;
+  --color-dark: #343a40;
+  --color-neutral: #808080;
+  --color-success: #28a745;
+  --color-warning: #ffc107;
+  --color-danger: #dc3545;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* Customize scrollbar for Webkit browsers (Chrome, Safari, etc.) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px; /* For horizontal scrollbars */
+}
+
+/* Hide scrollbar track when not in use */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Hide scrollbar thumb by default, show on hover/scroll */
+::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 136, 0); /* Fully transparent when not in use */
+  border-radius: 3px;
+  transition: background 0.2s ease; /* Smooth transition for visibility */
+}
+
+/* Show thumb when hovering or scrolling */
+body:hover::-webkit-scrollbar-thumb,
+body:active::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 136, 0.3); /* Visible when active */
+}
+
+/* Darker on hover of the thumb itself */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(85, 85, 85, 0.5);
+}
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent; /* Hidden by default */
+}
+
+/* Show in Firefox when hovering */
+*:hover {
+  scrollbar-color: rgba(136, 136, 136, 0.3) transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  color: #1A1A1A;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+}

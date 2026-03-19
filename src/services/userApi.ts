@@ -1,7 +1,7 @@
 import apiClient from "../config/apiClient";
 import { API_ENDPOINTS } from "../config/endpoints";
 
-const { LMS_URL, USER } = API_ENDPOINTS;
+const { BASE_URL, LMS_URL, USER } = API_ENDPOINTS;
 
 type GetAllUsersOptions = {
   select?: string[];
@@ -87,6 +87,15 @@ class UserService {
       withCredentials: true,
     });
 
+    return response.data;
+  };
+
+  logoutPerformanceSession = async () => {
+    const response = await apiClient.post(
+      `${BASE_URL}${USER.LOGOUT}`,
+      {},
+      { withCredentials: true }
+    );
     return response.data;
   };
 }

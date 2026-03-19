@@ -12,7 +12,7 @@ import {
 } from "../components/icons/animate";
 import UserService from "../services/userApi";
 import SystemBridgeLoader from "../components/common/SystemBridgeLoader";
-import { setStoredAuthToken } from "../lib/authToken";
+import { getStoredAuthToken, setStoredAuthToken } from "../lib/authToken";
 
 const NAV_ITEMS = [
   { label: "Dashboard", path: "/dashboard", icon: DashboardIcon },
@@ -49,6 +49,7 @@ export default function PerformanceLayout() {
     const params = new URLSearchParams(window.location.search);
     return !params.has("accessToken") && !params.has("token");
   });
+  const [isAuthReady, setIsAuthReady] = useState(() => Boolean(getStoredAuthToken()));
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -74,12 +75,31 @@ export default function PerformanceLayout() {
     setIsBridgeInitialized(true);
   }, [location.pathname, location.search, navigate]);
 
-  const { data: currentUser } = useQuery({
+  const { data: currentUser, isLoading: isCurrentUserLoading } = useQuery({
     queryKey: ["user", "current", "organization-branding"],
     queryFn: () => UserService.getCurrentUser(),
     staleTime: 1000 * 60 * 5,
     enabled: isBridgeInitialized,
   });
+
+  useEffect(() => {
+    const existingToken = getStoredAuthToken();
+    if (existingToken) {
+      setIsAuthReady(true);
+      return;
+    }
+
+    const tokenFromCurrentUser = (currentUser as { token?: unknown } | undefined)?.token;
+    if (typeof tokenFromCurrentUser === "string") {
+      setStoredAuthToken(tokenFromCurrentUser);
+      setIsAuthReady(true);
+      return;
+    }
+
+    if (!isCurrentUserLoading) {
+      setIsAuthReady(true);
+    }
+  }, [currentUser, isCurrentUserLoading]);
 
   const sidebarWidth = collapsed ? 80 : 272;
   const sourceUser =
@@ -162,7 +182,7 @@ export default function PerformanceLayout() {
     }, 900);
   };
 
-  if (!isBridgeInitialized) {
+  if (!isBridgeInitialized || !isAuthReady) {
     return (
       <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-slate-100 via-slate-50 to-cyan-50 px-6 py-12">
         <div className="pointer-events-none absolute -top-20 -left-20 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl" />

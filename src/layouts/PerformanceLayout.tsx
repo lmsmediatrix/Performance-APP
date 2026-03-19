@@ -3,30 +3,46 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { motion as m, AnimatePresence } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
 import {
   ChartBarIcon,
   ClipboardIcon,
   DashboardIcon,
   UsersRoundIcon,
 } from "../components/icons/animate";
-import UserService from "../services/userApi";
 import SystemBridgeLoader from "../components/common/SystemBridgeLoader";
 import { getStoredAuthToken, setStoredAuthToken } from "../lib/authToken";
+import { useCurrentPerformanceUser } from "../hooks/useCurrentPerformanceUser";
 
-const NAV_ITEMS = [
+const ADMIN_NAV_ITEMS = [
   { label: "Dashboard", path: "/dashboard", icon: DashboardIcon },
   { label: "Checklist Templates", path: "/templates", icon: ClipboardIcon },
   { label: "Employee Checklists", path: "/employee-checklists", icon: UsersRoundIcon },
   { label: "Reports", path: "/reports", icon: ChartBarIcon },
 ];
 
-const DEFAULT_LMS_APP_URL = "https://mediatrix-lms-app-dev.web.app";
-const LMS_APP_URL = import.meta.env.VITE_LMS_APP_URL || DEFAULT_LMS_APP_URL;
+const STUDENT_NAV_ITEMS = [
+  { label: "My Dashboard", path: "/student/dashboard", icon: DashboardIcon },
+  { label: "My Checklists", path: "/student/checklists", icon: ClipboardIcon },
+];
+
+const LOCAL_LMS_APP_URL = "http://localhost:5173";
+const HOSTED_LMS_APP_URL = "https://mediatrix-lms-app-dev.web.app";
 
 const trimTrailingSlashes = (value: string) => value.replace(/\/+$/, "");
 const isLocalhostHost = (hostname: string) =>
   hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
+
+const resolveDefaultLmsAppUrl = () => {
+  if (typeof window === "undefined") {
+    return HOSTED_LMS_APP_URL;
+  }
+
+  return isLocalhostHost(window.location.hostname)
+    ? LOCAL_LMS_APP_URL
+    : HOSTED_LMS_APP_URL;
+};
+
+const LMS_APP_URL = import.meta.env.VITE_LMS_APP_URL || resolveDefaultLmsAppUrl();
 
 const toAbsoluteUrl = (url: string) => {
   try {
@@ -75,12 +91,8 @@ export default function PerformanceLayout() {
     setIsBridgeInitialized(true);
   }, [location.pathname, location.search, navigate]);
 
-  const { data: currentUser, isLoading: isCurrentUserLoading } = useQuery({
-    queryKey: ["user", "current", "organization-branding"],
-    queryFn: () => UserService.getCurrentUser(),
-    staleTime: 1000 * 60 * 5,
-    enabled: isBridgeInitialized,
-  });
+  const { data: currentUser, isLoading: isCurrentUserLoading } =
+    useCurrentPerformanceUser(isBridgeInitialized);
 
   useEffect(() => {
     const existingToken = getStoredAuthToken();
@@ -89,8 +101,8 @@ export default function PerformanceLayout() {
       return;
     }
 
-    const tokenFromCurrentUser = (currentUser as { token?: unknown } | undefined)?.token;
-    if (typeof tokenFromCurrentUser === "string") {
+    const tokenFromCurrentUser = currentUser?.token;
+    if (typeof tokenFromCurrentUser === "string" && tokenFromCurrentUser) {
       setStoredAuthToken(tokenFromCurrentUser);
       setIsAuthReady(true);
       return;
@@ -102,29 +114,11 @@ export default function PerformanceLayout() {
   }, [currentUser, isCurrentUserLoading]);
 
   const sidebarWidth = collapsed ? 80 : 272;
-  const sourceUser =
-    currentUser?.user && typeof currentUser.user === "object"
-      ? currentUser.user
-      : currentUser;
-
-  const organizationName = useMemo(
-    () =>
-      sourceUser?.organization?.name ??
-      sourceUser?.org?.name ??
-      sourceUser?.organizationName ??
-      "Bento Workspace",
-    [sourceUser]
-  );
-
-  const organizationLogo = useMemo(
-    () =>
-      sourceUser?.organization?.branding?.logo ??
-      sourceUser?.organization?.logo ??
-      sourceUser?.org?.branding?.logo ??
-      sourceUser?.org?.logo ??
-      "",
-    [sourceUser]
-  );
+  const organizationName = currentUser?.organizationName ?? "Bento Workspace";
+  const organizationLogo = currentUser?.organizationLogo ?? "";
+  const isStudentWorkspace = Boolean(currentUser?.isStudent);
+  const navItems = isStudentWorkspace ? STUDENT_NAV_ITEMS : ADMIN_NAV_ITEMS;
+  const defaultDashboardPath = isStudentWorkspace ? "/student/dashboard" : "/dashboard";
 
   const lmsBackUrl = useMemo(() => {
     const lmsBaseUrl = trimTrailingSlashes(toAbsoluteUrl(LMS_APP_URL));
@@ -144,16 +138,12 @@ export default function PerformanceLayout() {
       }
     }
 
-    const orgCode =
-      sourceUser?.organization?.code ??
-      sourceUser?.org?.code ??
-      sourceUser?.organizationCode ??
-      "";
-    const role = (sourceUser?.role || "admin").toString().toLowerCase();
+    const orgCode = currentUser?.organizationCode ?? "";
+    const role = (currentUser?.role || "admin").toString().toLowerCase();
     const fallbackPath = orgCode ? `/${orgCode}/${role}/dashboard` : "/login";
 
     return `${lmsBaseUrl}${fallbackPath}`;
-  }, [location.search, sourceUser]);
+  }, [location.search, currentUser?.organizationCode, currentUser?.role]);
 
   useEffect(() => {
     setLogoLoadFailed(false);
@@ -208,7 +198,7 @@ export default function PerformanceLayout() {
       >
         <div
           className="flex cursor-pointer select-none items-center gap-3 border-b border-slate-100 px-4 py-5"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate(defaultDashboardPath)}
         >
           {renderBrandIcon()}
           <AnimatePresence>
@@ -230,7 +220,7 @@ export default function PerformanceLayout() {
         </div>
 
         <nav className="flex-1 space-y-1.5 px-2 py-4">
-          {NAV_ITEMS.map(({ label, path, icon: Icon }) => (
+          {navItems.map(({ label, path, icon: Icon }) => (
             <NavLink
               key={path}
               to={path}
@@ -322,7 +312,7 @@ export default function PerformanceLayout() {
               </div>
 
               <nav className="flex-1 space-y-1.5 px-2 py-4">
-                {NAV_ITEMS.map(({ label, path, icon: Icon }) => (
+                {navItems.map(({ label, path, icon: Icon }) => (
                   <NavLink
                     key={path}
                     to={path}
@@ -374,11 +364,11 @@ export default function PerformanceLayout() {
 
           <div className="flex items-center gap-2">
             <div className="flex size-8 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
-              A
+              {currentUser?.initials ?? "A"}
             </div>
             <div className="hidden text-right sm:block">
-              <p className="text-sm font-medium text-slate-800">Admin</p>
-              <p className="text-xs text-slate-500">Organization Admin</p>
+              <p className="text-sm font-medium text-slate-800">{currentUser?.name ?? "Admin"}</p>
+              <p className="text-xs text-slate-500">{currentUser?.roleLabel ?? "Organization Admin"}</p>
             </div>
           </div>
         </header>

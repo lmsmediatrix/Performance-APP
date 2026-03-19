@@ -12,6 +12,7 @@ import {
 } from "../components/icons/animate";
 import UserService from "../services/userApi";
 import SystemBridgeLoader from "../components/common/SystemBridgeLoader";
+import { setStoredAuthToken } from "../lib/authToken";
 
 const NAV_ITEMS = [
   { label: "Dashboard", path: "/dashboard", icon: DashboardIcon },
@@ -40,12 +41,44 @@ export default function PerformanceLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [logoLoadFailed, setLogoLoadFailed] = useState(false);
   const [isReturningToLms, setIsReturningToLms] = useState(false);
+  const [isBridgeInitialized, setIsBridgeInitialized] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    return !params.has("accessToken") && !params.has("token");
+  });
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const accessToken = searchParams.get("accessToken") || searchParams.get("token");
+
+    if (accessToken) {
+      setStoredAuthToken(accessToken);
+      searchParams.delete("accessToken");
+      searchParams.delete("token");
+
+      const sanitizedSearch = searchParams.toString();
+      navigate(
+        {
+          pathname: location.pathname,
+          search: sanitizedSearch ? `?${sanitizedSearch}` : "",
+        },
+        { replace: true }
+      );
+    }
+
+    setIsBridgeInitialized(true);
+  }, [location.pathname, location.search, navigate]);
+
   const { data: currentUser } = useQuery({
     queryKey: ["user", "current", "organization-branding"],
     queryFn: () => UserService.getCurrentUser(),
     staleTime: 1000 * 60 * 5,
+    enabled: isBridgeInitialized,
   });
 
   const sidebarWidth = collapsed ? 80 : 272;
@@ -128,6 +161,23 @@ export default function PerformanceLayout() {
       window.location.assign(lmsBackUrl);
     }, 900);
   };
+
+  if (!isBridgeInitialized) {
+    return (
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-slate-100 via-slate-50 to-cyan-50 px-6 py-12">
+        <div className="pointer-events-none absolute -top-20 -left-20 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -right-20 h-80 w-80 rounded-full bg-emerald-200/40 blur-3xl" />
+        <div className="relative z-10 w-full max-w-2xl">
+          <SystemBridgeLoader
+            title="Initializing secure session"
+            subtitle="Setting up your access token for Performance APIs."
+            fromLabel="ALMA LMS"
+            toLabel="Performance System"
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-[radial-gradient(circle_at_0%_0%,#dbeafe_0%,#f8fafc_35%,#eef2ff_100%)]">

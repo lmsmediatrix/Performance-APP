@@ -1,0 +1,149 @@
+[debug] [2026-03-19T03:34:48.581Z] ----------------------------------------------------------------------
+[debug] [2026-03-19T03:34:48.583Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\User\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting --project mediatrix-performance-app-dev
+[debug] [2026-03-19T03:34:48.583Z] CLI Version:   15.6.0
+[debug] [2026-03-19T03:34:48.583Z] Platform:      win32
+[debug] [2026-03-19T03:34:48.583Z] Node Version:  v22.13.0
+[debug] [2026-03-19T03:34:48.584Z] Time:          Thu Mar 19 2026 11:34:48 GMT+0800 (Philippine Standard Time)
+[debug] [2026-03-19T03:34:48.584Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-19T03:34:48.585Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-03-19T03:34:50.846Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-19T03:34:50.847Z] > authorizing via signed-in user (lms.mediatrix@gmail.com)
+[debug] [2026-03-19T03:34:50.847Z] [iam] checking project mediatrix-performance-app-dev for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-03-19T03:34:50.848Z] Checked if tokens are valid: false, expires at: 1773376722461
+[debug] [2026-03-19T03:34:50.848Z] Checked if tokens are valid: false, expires at: 1773376722461
+[debug] [2026-03-19T03:34:50.848Z] > refreshing access token with scopes: []
+[debug] [2026-03-19T03:34:50.850Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-03-19T03:34:50.850Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-19T03:34:51.032Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-03-19T03:34:51.032Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-19T03:34:51.039Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/mediatrix-performance-app-dev:testIamPermissions [none]
+[debug] [2026-03-19T03:34:51.039Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/mediatrix-performance-app-dev:testIamPermissions  x-goog-user-project=mediatrix-performance-app-dev
+[debug] [2026-03-19T03:34:51.039Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/mediatrix-performance-app-dev:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-19T03:34:51.422Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-03-19T03:34:51.423Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-03-19T03:34:52.404Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/mediatrix-performance-app-dev:testIamPermissions 200
+[debug] [2026-03-19T03:34:52.404Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/mediatrix-performance-app-dev:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-19T03:34:52.404Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:52.404Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:52.405Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/mediatrix-performance-app-dev [none]
+[debug] [2026-03-19T03:34:52.925Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/mediatrix-performance-app-dev 200
+[debug] [2026-03-19T03:34:52.925Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/mediatrix-performance-app-dev {"projectId":"mediatrix-performance-app-dev","projectNumber":"256488383825","displayName":"mediatrix-performance-app-dev","name":"projects/mediatrix-performance-app-dev","resources":{"hostingSite":"mediatrix-performance-app-dev"},"state":"ACTIVE","etag":"1_00e62bb0-383a-4be3-9965-f4043c66f77e"}
+[info] 
+[info] === Deploying to 'mediatrix-performance-app-dev'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2026-03-19T03:34:52.931Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:52.931Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:52.931Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/mediatrix-performance-app-dev/versions [none]
+[debug] [2026-03-19T03:34:52.931Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/mediatrix-performance-app-dev/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2026-03-19T03:34:55.425Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/mediatrix-performance-app-dev/versions 200
+[debug] [2026-03-19T03:34:55.425Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/mediatrix-performance-app-dev/versions {"name":"projects/256488383825/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[mediatrix-performance-app-dev]: beginning deploy... 
+[info] i  hosting[mediatrix-performance-app-dev]: found 9 files in dist 
+[debug] [2026-03-19T03:34:55.434Z] [hosting] uploading with 200 concurrency
+[debug] [2026-03-19T03:34:55.479Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:55.479Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:55.480Z] [hosting] hash cache [ZGlzdA] stored for 9 files
+[debug] [2026-03-19T03:34:55.480Z] [hosting][hash queue][FINAL] {"max":41,"min":6,"avg":13.333333333333334,"active":0,"complete":9,"success":9,"errored":0,"retried":0,"total":9,"elapsed":45}
+[debug] [2026-03-19T03:34:55.480Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/256488383825/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559:populateFiles [none]
+[debug] [2026-03-19T03:34:55.480Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/256488383825/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559:populateFiles {"files":{"/sitemap.xml":"7d96dbb100a2f1659d1ad4cbbe34c8d783460d904505b911081ec0a984544e6c","/index.html":"8eaedb8fe7cefc6a055aea171ac7f05008aa995e0bc237a708dc9c8b4431feca","/robots.txt":"d3287d22de9d4ff596314659ebe8e0127db6b1ffd11d8b9e90a661b943663611","/assets/purify.es-BgtpMKW3.js":"dd3986b9edb8a889b15573796f90cdc1848ba2f9e1650a2d2e7d58b9d1c623ee","/assets/index-cBrpIaJt.css":"700dd7fa686585cb811e33616b4b162da6518cee6b5dc5ccd720440cbbf12208","/assets/index.es-BdW2TWcN.js":"0be4af96b555e6fd5a61c14e86c684590fd591f2876c1f5fed6945f4c2e6132e","/assets/html2canvas.esm-CBrSDip1.js":"ded7ecd5734581383939d1afccae5caec1522d744916c1a8238850e3728709cb","/favicon.ico":"f24059b4bf2c130120c9fce583a3f6098b8b97e9b0f94b07dca8defbeab5058a","/assets/index-BJVA3tta.js":"4c5ffd386f9aa86aff2fb094f0ed80f8e8d70266f443f23dc2f85d701e778538"}}
+[debug] [2026-03-19T03:34:56.345Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/256488383825/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559:populateFiles 200
+[debug] [2026-03-19T03:34:56.346Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/256488383825/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559:populateFiles {"uploadRequiredHashes":["700dd7fa686585cb811e33616b4b162da6518cee6b5dc5ccd720440cbbf12208","f24059b4bf2c130120c9fce583a3f6098b8b97e9b0f94b07dca8defbeab5058a","8eaedb8fe7cefc6a055aea171ac7f05008aa995e0bc237a708dc9c8b4431feca","0be4af96b555e6fd5a61c14e86c684590fd591f2876c1f5fed6945f4c2e6132e","7d96dbb100a2f1659d1ad4cbbe34c8d783460d904505b911081ec0a984544e6c","d3287d22de9d4ff596314659ebe8e0127db6b1ffd11d8b9e90a661b943663611","dd3986b9edb8a889b15573796f90cdc1848ba2f9e1650a2d2e7d58b9d1c623ee","ded7ecd5734581383939d1afccae5caec1522d744916c1a8238850e3728709cb","4c5ffd386f9aa86aff2fb094f0ed80f8e8d70266f443f23dc2f85d701e778538"],"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files"}
+[debug] [2026-03-19T03:34:56.346Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.347Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.347Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.347Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.347Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.347Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.347Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.347Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.347Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.347Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.347Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.347Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.348Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.348Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.348Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.348Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.348Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.348Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:56.348Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/700dd7fa686585cb811e33616b4b162da6518cee6b5dc5ccd720440cbbf12208 [none]
+[debug] [2026-03-19T03:34:56.348Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/700dd7fa686585cb811e33616b4b162da6518cee6b5dc5ccd720440cbbf12208 [stream]
+[debug] [2026-03-19T03:34:56.350Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/f24059b4bf2c130120c9fce583a3f6098b8b97e9b0f94b07dca8defbeab5058a [none]
+[debug] [2026-03-19T03:34:56.350Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/f24059b4bf2c130120c9fce583a3f6098b8b97e9b0f94b07dca8defbeab5058a [stream]
+[debug] [2026-03-19T03:34:56.352Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/8eaedb8fe7cefc6a055aea171ac7f05008aa995e0bc237a708dc9c8b4431feca [none]
+[debug] [2026-03-19T03:34:56.353Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/8eaedb8fe7cefc6a055aea171ac7f05008aa995e0bc237a708dc9c8b4431feca [stream]
+[debug] [2026-03-19T03:34:56.356Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/0be4af96b555e6fd5a61c14e86c684590fd591f2876c1f5fed6945f4c2e6132e [none]
+[debug] [2026-03-19T03:34:56.356Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/0be4af96b555e6fd5a61c14e86c684590fd591f2876c1f5fed6945f4c2e6132e [stream]
+[debug] [2026-03-19T03:34:56.361Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/7d96dbb100a2f1659d1ad4cbbe34c8d783460d904505b911081ec0a984544e6c [none]
+[debug] [2026-03-19T03:34:56.362Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/7d96dbb100a2f1659d1ad4cbbe34c8d783460d904505b911081ec0a984544e6c [stream]
+[debug] [2026-03-19T03:34:56.366Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/d3287d22de9d4ff596314659ebe8e0127db6b1ffd11d8b9e90a661b943663611 [none]
+[debug] [2026-03-19T03:34:56.366Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/d3287d22de9d4ff596314659ebe8e0127db6b1ffd11d8b9e90a661b943663611 [stream]
+[debug] [2026-03-19T03:34:56.367Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/dd3986b9edb8a889b15573796f90cdc1848ba2f9e1650a2d2e7d58b9d1c623ee [none]
+[debug] [2026-03-19T03:34:56.368Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/dd3986b9edb8a889b15573796f90cdc1848ba2f9e1650a2d2e7d58b9d1c623ee [stream]
+[debug] [2026-03-19T03:34:56.368Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/ded7ecd5734581383939d1afccae5caec1522d744916c1a8238850e3728709cb [none]
+[debug] [2026-03-19T03:34:56.368Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/ded7ecd5734581383939d1afccae5caec1522d744916c1a8238850e3728709cb [stream]
+[debug] [2026-03-19T03:34:56.370Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/4c5ffd386f9aa86aff2fb094f0ed80f8e8d70266f443f23dc2f85d701e778538 [none]
+[debug] [2026-03-19T03:34:56.370Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/4c5ffd386f9aa86aff2fb094f0ed80f8e8d70266f443f23dc2f85d701e778538 [stream]
+[debug] [2026-03-19T03:34:56.371Z] [hosting][populate queue][FINAL] {"max":869,"min":869,"avg":869,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":893}
+[debug] [2026-03-19T03:34:56.372Z] [hosting] uploads queued: 9
+[info] i  hosting: uploading new files [0/9] (0%) 
+[debug] [2026-03-19T03:34:57.860Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/f24059b4bf2c130120c9fce583a3f6098b8b97e9b0f94b07dca8defbeab5058a 200
+[debug] [2026-03-19T03:34:57.861Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/f24059b4bf2c130120c9fce583a3f6098b8b97e9b0f94b07dca8defbeab5058a [stream]
+[debug] [2026-03-19T03:34:58.099Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/8eaedb8fe7cefc6a055aea171ac7f05008aa995e0bc237a708dc9c8b4431feca 200
+[debug] [2026-03-19T03:34:58.099Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/8eaedb8fe7cefc6a055aea171ac7f05008aa995e0bc237a708dc9c8b4431feca [stream]
+[debug] [2026-03-19T03:34:58.149Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/700dd7fa686585cb811e33616b4b162da6518cee6b5dc5ccd720440cbbf12208 200
+[debug] [2026-03-19T03:34:58.149Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/700dd7fa686585cb811e33616b4b162da6518cee6b5dc5ccd720440cbbf12208 [stream]
+[debug] [2026-03-19T03:34:58.209Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/dd3986b9edb8a889b15573796f90cdc1848ba2f9e1650a2d2e7d58b9d1c623ee 200
+[debug] [2026-03-19T03:34:58.209Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/dd3986b9edb8a889b15573796f90cdc1848ba2f9e1650a2d2e7d58b9d1c623ee [stream]
+[debug] [2026-03-19T03:34:58.271Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/d3287d22de9d4ff596314659ebe8e0127db6b1ffd11d8b9e90a661b943663611 200
+[debug] [2026-03-19T03:34:58.271Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/d3287d22de9d4ff596314659ebe8e0127db6b1ffd11d8b9e90a661b943663611 [stream]
+[debug] [2026-03-19T03:34:58.329Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/ded7ecd5734581383939d1afccae5caec1522d744916c1a8238850e3728709cb 200
+[debug] [2026-03-19T03:34:58.329Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/ded7ecd5734581383939d1afccae5caec1522d744916c1a8238850e3728709cb [stream]
+[debug] [2026-03-19T03:34:58.335Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/0be4af96b555e6fd5a61c14e86c684590fd591f2876c1f5fed6945f4c2e6132e 200
+[debug] [2026-03-19T03:34:58.335Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/0be4af96b555e6fd5a61c14e86c684590fd591f2876c1f5fed6945f4c2e6132e [stream]
+[debug] [2026-03-19T03:34:58.335Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/7d96dbb100a2f1659d1ad4cbbe34c8d783460d904505b911081ec0a984544e6c 200
+[debug] [2026-03-19T03:34:58.335Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/7d96dbb100a2f1659d1ad4cbbe34c8d783460d904505b911081ec0a984544e6c [stream]
+[info] i  hosting: uploading new files [8/9] (88%) 
+[debug] [2026-03-19T03:34:59.541Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/4c5ffd386f9aa86aff2fb094f0ed80f8e8d70266f443f23dc2f85d701e778538 200
+[debug] [2026-03-19T03:34:59.541Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559/files/4c5ffd386f9aa86aff2fb094f0ed80f8e8d70266f443f23dc2f85d701e778538 [stream]
+[debug] [2026-03-19T03:34:59.542Z] [hosting][upload queue][FINAL] {"max":3194,"min":1514,"avg":2000.5555555555557,"active":0,"complete":9,"success":9,"errored":0,"retried":0,"total":9,"elapsed":3196}
+[info] i  hosting: upload complete 
+[info] +  hosting[mediatrix-performance-app-dev]: file upload complete 
+[debug] [2026-03-19T03:34:59.544Z] [hosting] deploy completed after 4117ms
+[debug] [2026-03-19T03:34:59.545Z] [
+  {
+    "config": {
+      "public": "dist",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "site": "mediatrix-performance-app-dev"
+    },
+    "version": "projects/256488383825/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559"
+  }
+]
+[info] i  hosting[mediatrix-performance-app-dev]: finalizing version... 
+[debug] [2026-03-19T03:34:59.546Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:59.546Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:34:59.547Z] >>> [apiv2][query] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559 updateMask=status%2Cconfig
+[debug] [2026-03-19T03:34:59.547Z] >>> [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559 {"status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]}}
+[debug] [2026-03-19T03:35:00.577Z] <<< [apiv2][status] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559 200
+[debug] [2026-03-19T03:35:00.578Z] <<< [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559 {"name":"projects/256488383825/sites/mediatrix-performance-app-dev/versions/48c56a2d60c66559","status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-03-19T03:34:54.343427Z","createUser":{"email":"lms.mediatrix@gmail.com"},"finalizeTime":"2026-03-19T03:35:00.967750Z","finalizeUser":{"email":"lms.mediatrix@gmail.com"}}
+[debug] [2026-03-19T03:35:00.578Z] [hosting] finalized version for mediatrix-performance-app-dev:[object Object]
+[info] +  hosting[mediatrix-performance-app-dev]: version finalized 
+[info] i  hosting[mediatrix-performance-app-dev]: releasing new version... 
+[debug] [2026-03-19T03:35:00.578Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:35:00.579Z] Checked if tokens are valid: true, expires at: 1773894890032
+[debug] [2026-03-19T03:35:00.579Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/mediatrix-performance-app-dev/channels/live/releases versionName=projects%2F256488383825%2Fsites%2Fmediatrix-performance-app-dev%2Fversions%2F48c56a2d60c66559
+[debug] [2026-03-19T03:35:00.579Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/mediatrix-performance-app-dev/channels/live/releases {}
+[debug] [2026-03-19T03:35:01.300Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/mediatrix-performance-app-dev/channels/live/releases 200

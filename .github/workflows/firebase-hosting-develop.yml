@@ -9,6 +9,9 @@ jobs:
   build_and_deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
+    env:
+      VITE_BASE_URL: https://ps-api-develop-cpn5wtzfia-as.a.run.app/api
+      VITE_LMS_BASE_URL: https://lms-api-develop-763972588311.asia-southeast1.run.app/api
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,14 +27,16 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL_DEV }}" >> .env
+          echo "VITE_BASE_URL=${{ env.VITE_BASE_URL }}" >> .env
+          echo "VITE_LMS_BASE_URL=${{ env.VITE_LMS_BASE_URL }}" >> .env
           echo "VITE_CLOUDINARY_PATH=${{ secrets.VITE_CLOUDINARY_PATH_DEV }}" >> .env
 
       - name: Build
         run: npm run build
         env:
           CI: false
-          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL_DEV }}
+          VITE_BASE_URL: ${{ env.VITE_BASE_URL }}
+          VITE_LMS_BASE_URL: ${{ env.VITE_LMS_BASE_URL }}
           VITE_CLOUDINARY_PATH: ${{ secrets.VITE_CLOUDINARY_PATH_DEV }}
 
       - name: Deploy to Firebase

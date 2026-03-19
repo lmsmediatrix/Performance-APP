@@ -1,7 +1,7 @@
 {
   "projects": {
-    "default": "lms-app-test-bffd3",
-    "lms-app-test": "lms-app-test-bffd3"
+    "default": "mediatrix-performance-app-dev",
+    "mediatrix-performance-app-dev": "mediatrix-performance-app-dev"
   },
   "targets": {},
   "etags": {}

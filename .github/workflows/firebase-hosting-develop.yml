@@ -38,6 +38,6 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_LMS_APP_DEV_1F189 }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_MEDIATRIX_PERFORMANCE_APP_DEV }}"
           channelId: live
-          projectId: lms-app-dev-1f189
+          projectId: mediatrix-performance-app-dev

@@ -10,8 +10,13 @@ import {
   UsersRoundIcon,
 } from "../components/icons/animate";
 import SystemBridgeLoader from "../components/common/SystemBridgeLoader";
-import { getStoredAuthToken, setStoredAuthToken } from "../lib/authToken";
+import {
+  clearStoredAuthToken,
+  getStoredAuthToken,
+  setStoredAuthToken,
+} from "../lib/authToken";
 import { useCurrentPerformanceUser } from "../hooks/useCurrentPerformanceUser";
+import UserService from "../services/userApi";
 
 const ADMIN_NAV_ITEMS = [
   { label: "Dashboard", path: "/dashboard", icon: DashboardIcon },
@@ -173,9 +178,18 @@ export default function PerformanceLayout() {
   const goBackToLms = () => {
     if (isReturningToLms) return;
     setIsReturningToLms(true);
-    window.setTimeout(() => {
+
+    const timeoutPromise = new Promise((resolve) => {
+      window.setTimeout(resolve, 1200);
+    });
+
+    Promise.race([
+      UserService.logoutPerformanceSession().catch(() => null),
+      timeoutPromise,
+    ]).finally(() => {
+      clearStoredAuthToken();
       window.location.assign(lmsBackUrl);
-    }, 900);
+    });
   };
 
   if (!isBridgeInitialized || !isAuthReady) {

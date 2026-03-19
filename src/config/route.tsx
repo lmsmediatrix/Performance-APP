@@ -10,6 +10,8 @@ import StudentDashboardPage from "../pages/performance/StudentDashboardPage";
 import StudentChecklistsPage from "../pages/performance/StudentChecklistsPage";
 import StudentChecklistDetailPage from "../pages/performance/StudentChecklistDetailPage";
 import { useCurrentPerformanceUser } from "../hooks/useCurrentPerformanceUser";
+import { getStoredAuthToken } from "../lib/authToken";
+import UnauthorizedPage from "../pages/UnauthorizedPage";
 
 function RouteLoadingScreen() {
   return (
@@ -20,8 +22,12 @@ function RouteLoadingScreen() {
 }
 
 function DefaultRoleRedirect() {
-  const { data: currentUser, isLoading } = useCurrentPerformanceUser();
+  const { data: currentUser, isLoading, isError } = useCurrentPerformanceUser();
+  const hasToken = Boolean(getStoredAuthToken());
   if (isLoading) return <RouteLoadingScreen />;
+  if (isError || (!hasToken && !currentUser?.id)) {
+    return <Navigate to="/unauthorized" replace />;
+  }
 
   if (currentUser?.isStudent) {
     return <Navigate to="/student/dashboard" replace />;
@@ -31,8 +37,12 @@ function DefaultRoleRedirect() {
 }
 
 function AdminOnlyRoute({ children }: { children: JSX.Element }) {
-  const { data: currentUser, isLoading } = useCurrentPerformanceUser();
+  const { data: currentUser, isLoading, isError } = useCurrentPerformanceUser();
+  const hasToken = Boolean(getStoredAuthToken());
   if (isLoading) return <RouteLoadingScreen />;
+  if (isError || (!hasToken && !currentUser?.id)) {
+    return <Navigate to="/unauthorized" replace />;
+  }
 
   if (currentUser?.isStudent) {
     return <Navigate to="/student/dashboard" replace />;
@@ -42,8 +52,12 @@ function AdminOnlyRoute({ children }: { children: JSX.Element }) {
 }
 
 function StudentOnlyRoute({ children }: { children: JSX.Element }) {
-  const { data: currentUser, isLoading } = useCurrentPerformanceUser();
+  const { data: currentUser, isLoading, isError } = useCurrentPerformanceUser();
+  const hasToken = Boolean(getStoredAuthToken());
   if (isLoading) return <RouteLoadingScreen />;
+  if (isError || (!hasToken && !currentUser?.id)) {
+    return <Navigate to="/unauthorized" replace />;
+  }
 
   if (!currentUser?.isStudent) {
     return <Navigate to="/dashboard" replace />;
@@ -131,5 +145,6 @@ export const appRoutes = [
       },
     ],
   },
+  { path: "/unauthorized", element: <UnauthorizedPage /> },
   { path: "*", element: <Navigate to="/" replace /> },
 ];

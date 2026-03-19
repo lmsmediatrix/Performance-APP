@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { motion as m, AnimatePresence } from "framer-motion";
@@ -91,7 +91,7 @@ export default function PerformanceLayout() {
     setIsBridgeInitialized(true);
   }, [location.pathname, location.search, navigate]);
 
-  const { data: currentUser, isLoading: isCurrentUserLoading } =
+  const { data: currentUser, isLoading: isCurrentUserLoading, isError: isCurrentUserError } =
     useCurrentPerformanceUser(isBridgeInitialized);
 
   useEffect(() => {
@@ -119,6 +119,12 @@ export default function PerformanceLayout() {
   const isStudentWorkspace = Boolean(currentUser?.isStudent);
   const navItems = isStudentWorkspace ? STUDENT_NAV_ITEMS : ADMIN_NAV_ITEMS;
   const defaultDashboardPath = isStudentWorkspace ? "/student/dashboard" : "/dashboard";
+  const hasStoredToken = Boolean(getStoredAuthToken());
+  const hasCurrentUser = Boolean(currentUser?.id);
+  const shouldRedirectUnauthorized =
+    isBridgeInitialized &&
+    !isCurrentUserLoading &&
+    (isCurrentUserError || (!hasStoredToken && !hasCurrentUser));
 
   const lmsBackUrl = useMemo(() => {
     const lmsBaseUrl = trimTrailingSlashes(toAbsoluteUrl(LMS_APP_URL));
@@ -187,6 +193,10 @@ export default function PerformanceLayout() {
         </div>
       </div>
     );
+  }
+
+  if (shouldRedirectUnauthorized && location.pathname !== "/unauthorized") {
+    return <Navigate to="/unauthorized" replace />;
   }
 
   return (

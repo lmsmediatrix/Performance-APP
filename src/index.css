@@ -17,6 +17,14 @@
   font-weight: 400;
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
 /* Customize scrollbar for Webkit browsers (Chrome, Safari, etc.) */
 ::-webkit-scrollbar {
   width: 6px;
@@ -66,6 +74,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   color: #1A1A1A;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 #root {

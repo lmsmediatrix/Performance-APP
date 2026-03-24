@@ -17,6 +17,7 @@ import {
 } from "../lib/authToken";
 import { useCurrentPerformanceUser } from "../hooks/useCurrentPerformanceUser";
 import UserService from "../services/userApi";
+import { useAppTheme } from "../context/AppThemeContext";
 
 const ADMIN_NAV_ITEMS = [
   { label: "Dashboard", path: "/dashboard", icon: DashboardIcon },
@@ -42,12 +43,14 @@ const resolveDefaultLmsAppUrl = () => {
     return HOSTED_LMS_APP_URL;
   }
 
-  return isLocalhostHost(window.location.hostname)
-    ? LOCAL_LMS_APP_URL
-    : HOSTED_LMS_APP_URL;
+  if (isLocalhostHost(window.location.hostname)) {
+    return LOCAL_LMS_APP_URL;
+  }
+
+  return import.meta.env.VITE_LMS_APP_URL || HOSTED_LMS_APP_URL;
 };
 
-const LMS_APP_URL = import.meta.env.VITE_LMS_APP_URL || resolveDefaultLmsAppUrl();
+const LMS_APP_URL = resolveDefaultLmsAppUrl();
 
 const toAbsoluteUrl = (url: string) => {
   try {
@@ -58,6 +61,7 @@ const toAbsoluteUrl = (url: string) => {
 };
 
 export default function PerformanceLayout() {
+  const { isDarkMode } = useAppTheme();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [logoLoadFailed, setLogoLoadFailed] = useState(false);
@@ -121,6 +125,9 @@ export default function PerformanceLayout() {
   const sidebarWidth = collapsed ? 80 : 272;
   const organizationName = currentUser?.organizationName ?? "Bento Workspace";
   const organizationLogo = currentUser?.organizationLogo ?? "";
+  const userInitials = currentUser?.initials ?? "A";
+  const userDisplayName = currentUser?.name ?? "Admin";
+  const userRoleLabel = currentUser?.roleLabel ?? "Organization Admin";
   const isStudentWorkspace = Boolean(currentUser?.isStudent);
   const navItems = isStudentWorkspace ? STUDENT_NAV_ITEMS : ADMIN_NAV_ITEMS;
   const defaultDashboardPath = isStudentWorkspace ? "/student/dashboard" : "/dashboard";
@@ -131,15 +138,55 @@ export default function PerformanceLayout() {
     !isCurrentUserLoading &&
     (isCurrentUserError || (!hasStoredToken && !hasCurrentUser));
 
+  const shellBackgroundClass = isDarkMode
+    ? "bg-[radial-gradient(circle_at_0%_0%,#0f172a_0%,#020617_100%)]"
+    : "bg-[radial-gradient(circle_at_0%_0%,#dbeafe_0%,#f1f5f9_40%,#f8fafc_100%)]";
+  const sidebarClass = isDarkMode
+    ? "border-slate-800/80 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900 text-slate-100 shadow-[0_28px_70px_-35px_rgba(2,6,23,0.95)]"
+    : "border-slate-200/80 bg-white/90 text-slate-800 shadow-[0_24px_60px_-38px_rgba(15,23,42,0.35)]";
+  const sidebarHeaderClass = isDarkMode ? "border-slate-800/80" : "border-slate-100";
+  const sidebarTitleClass = isDarkMode ? "text-slate-100" : "text-slate-900";
+  const sidebarSubtitleClass = isDarkMode ? "text-slate-400" : "text-slate-500";
+  const navLinkActiveClass = isDarkMode
+    ? "border border-blue-300/30 bg-blue-500/15 text-blue-100"
+    : "border border-blue-100 bg-blue-50/90 text-blue-700";
+  const navLinkIdleClass = isDarkMode
+    ? "text-slate-300 hover:bg-white/5 hover:text-white"
+    : "text-slate-600 hover:bg-white hover:text-slate-900";
+  const navIconActiveClass = isDarkMode ? "text-blue-200" : "text-blue-600";
+  const navIconIdleClass = isDarkMode ? "text-slate-400 group-hover:text-slate-100" : "text-slate-500 group-hover:text-slate-700";
+  const profileCardClass = isDarkMode
+    ? "border border-white/10 bg-white/5"
+    : "border border-slate-200 bg-slate-50/80";
+  const profileNameClass = isDarkMode ? "text-slate-100" : "text-slate-800";
+  const profileRoleClass = isDarkMode ? "text-slate-400" : "text-slate-500";
+  const sidebarToggleClass = isDarkMode
+    ? "border-slate-700 bg-slate-900 text-slate-300 hover:border-blue-400/70 hover:text-blue-200"
+    : "border-slate-200 bg-white text-slate-500 hover:border-blue-300 hover:text-blue-600";
+  const mainShellClass = isDarkMode
+    ? "border-slate-800/80 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900 shadow-[0_28px_70px_-35px_rgba(2,6,23,0.95)]"
+    : "border-white/70 bg-white/65 shadow-[0_24px_60px_-36px_rgba(15,23,42,0.45)]";
+  const headerShellClass = isDarkMode
+    ? "border-slate-800 bg-slate-950/80"
+    : "border-slate-200/80 bg-white/85";
+  const menuButtonClass = isDarkMode
+    ? "text-slate-300 hover:bg-white/10 hover:text-slate-100"
+    : "text-slate-500 hover:bg-slate-100 hover:text-slate-700";
+  const backButtonClass = isDarkMode
+    ? "border-slate-700 bg-slate-900 text-slate-100 hover:border-blue-400/60 hover:text-white"
+    : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:text-slate-900";
+
   const lmsBackUrl = useMemo(() => {
     const lmsBaseUrl = trimTrailingSlashes(toAbsoluteUrl(LMS_APP_URL));
+    const shouldForceLocalLms =
+      typeof window !== "undefined" && isLocalhostHost(window.location.hostname);
     const searchParams = new URLSearchParams(location.search);
     const returnTo = searchParams.get("returnTo");
 
     if (returnTo) {
       try {
         const resolvedReturnTo = new URL(returnTo, `${lmsBaseUrl}/`);
-        if (isLocalhostHost(resolvedReturnTo.hostname)) {
+        if (shouldForceLocalLms || isLocalhostHost(resolvedReturnTo.hostname)) {
           return `${lmsBaseUrl}${resolvedReturnTo.pathname}${resolvedReturnTo.search}${resolvedReturnTo.hash}`;
         }
         return resolvedReturnTo.toString();
@@ -161,7 +208,11 @@ export default function PerformanceLayout() {
   }, [organizationLogo]);
 
   const renderBrandIcon = () => (
-    <div className="flex size-10 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white text-blue-600 shadow-sm">
+    <div
+      className={`flex size-10 items-center justify-center overflow-hidden rounded-xl border text-blue-600 shadow-sm ${
+        isDarkMode ? "border-slate-700 bg-slate-950" : "border-slate-200 bg-white"
+      }`}
+    >
       {organizationLogo && !logoLoadFailed ? (
         <img
           src={organizationLogo}
@@ -194,9 +245,23 @@ export default function PerformanceLayout() {
 
   if (!isBridgeInitialized || !isAuthReady) {
     return (
-      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-slate-100 via-slate-50 to-cyan-50 px-6 py-12">
-        <div className="pointer-events-none absolute -top-20 -left-20 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 -right-20 h-80 w-80 rounded-full bg-emerald-200/40 blur-3xl" />
+      <div
+        className={`relative flex min-h-screen items-center justify-center overflow-hidden px-6 py-12 ${
+          isDarkMode
+            ? "bg-gradient-to-br from-slate-950 via-slate-900 to-slate-900"
+            : "bg-gradient-to-br from-slate-100 via-slate-50 to-cyan-50"
+        }`}
+      >
+        <div
+          className={`pointer-events-none absolute -top-20 -left-20 h-72 w-72 rounded-full blur-3xl ${
+            isDarkMode ? "bg-blue-500/20" : "bg-blue-200/40"
+          }`}
+        />
+        <div
+          className={`pointer-events-none absolute -bottom-24 -right-20 h-80 w-80 rounded-full blur-3xl ${
+            isDarkMode ? "bg-emerald-500/15" : "bg-emerald-200/40"
+          }`}
+        />
         <div className="relative z-10 w-full max-w-2xl">
           <SystemBridgeLoader
             title="Initializing secure session"
@@ -214,14 +279,14 @@ export default function PerformanceLayout() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[radial-gradient(circle_at_0%_0%,#dbeafe_0%,#f8fafc_35%,#eef2ff_100%)]">
+    <div className={`flex h-screen gap-2 overflow-hidden p-2 sm:gap-3 sm:p-3 ${shellBackgroundClass}`}>
       <m.aside
         animate={{ width: mobileOpen ? 272 : sidebarWidth }}
         transition={{ duration: 0.25, ease: "easeInOut" }}
-        className="relative z-30 hidden h-full flex-shrink-0 flex-col border-r border-slate-200/80 bg-white/80 backdrop-blur lg:flex"
+        className={`relative z-30 hidden h-full flex-shrink-0 flex-col rounded-[28px] border lg:flex ${sidebarClass}`}
       >
         <div
-          className="flex cursor-pointer select-none items-center gap-3 border-b border-slate-100 px-4 py-5"
+          className={`flex cursor-pointer select-none items-center gap-3 border-b px-4 py-5 ${sidebarHeaderClass}`}
           onClick={() => navigate(defaultDashboardPath)}
         >
           {renderBrandIcon()}
@@ -234,10 +299,10 @@ export default function PerformanceLayout() {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <p className="whitespace-nowrap text-sm font-semibold leading-tight text-slate-900">
+                <p className={`whitespace-nowrap text-sm font-semibold leading-tight ${sidebarTitleClass}`}>
                   Performance System
                 </p>
-                <p className="whitespace-nowrap text-xs text-slate-500">{organizationName}</p>
+                <p className={`whitespace-nowrap text-xs ${sidebarSubtitleClass}`}>{organizationName}</p>
               </m.div>
             )}
           </AnimatePresence>
@@ -250,9 +315,7 @@ export default function PerformanceLayout() {
               to={path}
               className={({ isActive }) =>
                 `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
-                  isActive
-                    ? "border border-blue-100 bg-blue-50/90 text-blue-700"
-                    : "text-slate-600 hover:bg-white hover:text-slate-900"
+                  isActive ? navLinkActiveClass : navLinkIdleClass
                 }`
               }
             >
@@ -260,7 +323,7 @@ export default function PerformanceLayout() {
                 <>
                   <Icon
                     size={18}
-                    className={`flex-shrink-0 ${isActive ? "text-blue-600" : "text-slate-500 group-hover:text-slate-700"}`}
+                    className={`flex-shrink-0 ${isActive ? navIconActiveClass : navIconIdleClass}`}
                   />
                   <AnimatePresence>
                     {!collapsed && (
@@ -282,22 +345,38 @@ export default function PerformanceLayout() {
         </nav>
 
         <AnimatePresence>
-          {!collapsed && (
+          {collapsed ? (
             <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="mx-3 mb-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2"
+              className="mx-3 mb-4 flex justify-center"
             >
-              <p className="text-xs font-semibold text-amber-700">Mock Mode</p>
-              <p className="text-xs text-amber-600">Using in-memory data</p>
+              <div className="flex size-8 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
+                {userInitials}
+              </div>
+            </m.div>
+          ) : (
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className={`mx-3 mb-4 flex items-center gap-3 rounded-xl px-3 py-2.5 ${profileCardClass}`}
+            >
+              <div className="flex size-8 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
+                {userInitials}
+              </div>
+              <div className="min-w-0">
+                <p className={`truncate text-sm font-medium ${profileNameClass}`}>{userDisplayName}</p>
+                <p className={`truncate text-xs ${profileRoleClass}`}>{userRoleLabel}</p>
+              </div>
             </m.div>
           )}
         </AnimatePresence>
 
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="absolute -right-3.5 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm transition-colors hover:border-blue-300 hover:text-blue-600"
+          className={`absolute -right-3.5 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full border shadow-sm transition-colors ${sidebarToggleClass}`}
         >
           {collapsed ? <MdChevronRight className="text-lg" /> : <MdChevronLeft className="text-lg" />}
         </button>
@@ -320,17 +399,24 @@ export default function PerformanceLayout() {
               animate={{ x: 0 }}
               exit={{ x: -272 }}
               transition={{ duration: 0.25 }}
-              className="fixed left-0 top-0 z-50 flex h-full w-[85vw] max-w-[292px] flex-col border-r border-slate-200 bg-white lg:hidden"
+              className={`fixed left-0 top-0 z-50 flex h-full w-[85vw] max-w-[292px] flex-col border-r lg:hidden ${
+                isDarkMode
+                  ? "border-slate-800 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900 text-slate-100"
+                  : "border-slate-200 bg-white text-slate-800"
+              }`}
             >
-              <div className="flex items-center justify-between border-b border-slate-100 px-4 py-5">
+              <div className={`flex items-center justify-between border-b px-4 py-5 ${sidebarHeaderClass}`}>
               <div className="flex items-center gap-3">
                   {renderBrandIcon()}
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">Performance System</p>
-                    <p className="text-xs text-slate-500">{organizationName}</p>
+                    <p className={`text-sm font-semibold ${sidebarTitleClass}`}>Performance System</p>
+                    <p className={`text-xs ${sidebarSubtitleClass}`}>{organizationName}</p>
                   </div>
                 </div>
-                <button onClick={() => setMobileOpen(false)} className="text-slate-500 hover:text-slate-700">
+                <button
+                  onClick={() => setMobileOpen(false)}
+                  className={isDarkMode ? "text-slate-400 hover:text-slate-200" : "text-slate-500 hover:text-slate-700"}
+                >
                   <HiX className="text-xl" />
                 </button>
               </div>
@@ -344,14 +430,16 @@ export default function PerformanceLayout() {
                     className={({ isActive }) =>
                       `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${
                         isActive
-                          ? "border border-blue-100 bg-blue-50 text-blue-700"
-                          : "text-slate-600 hover:bg-slate-100"
+                          ? navLinkActiveClass
+                          : isDarkMode
+                            ? "text-slate-300 hover:bg-white/5"
+                            : "text-slate-600 hover:bg-slate-100"
                       }`
                     }
                   >
                     {({ isActive }) => (
                       <>
-                        <Icon size={18} className={isActive ? "text-blue-600" : "text-slate-500"} />
+                        <Icon size={18} className={isActive ? navIconActiveClass : (isDarkMode ? "text-slate-400" : "text-slate-500")} />
                         {label}
                       </>
                     )}
@@ -359,19 +447,24 @@ export default function PerformanceLayout() {
                 ))}
               </nav>
 
-              <div className="mx-3 mb-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2">
-                <p className="text-xs font-semibold text-amber-700">Mock Mode</p>
-                <p className="text-xs text-amber-600">Using in-memory data</p>
+              <div className={`mx-3 mb-4 flex items-center gap-3 rounded-xl px-3 py-2.5 ${profileCardClass}`}>
+                <div className="flex size-8 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
+                  {userInitials}
+                </div>
+                <div className="min-w-0">
+                  <p className={`truncate text-sm font-medium ${profileNameClass}`}>{userDisplayName}</p>
+                  <p className={`truncate text-xs ${profileRoleClass}`}>{userRoleLabel}</p>
+                </div>
               </div>
             </m.aside>
           </>
         )}
       </AnimatePresence>
 
-      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <header className="sticky top-0 z-20 flex flex-shrink-0 items-center gap-4 border-b border-slate-200/70 bg-white/80 px-3 py-3 backdrop-blur sm:px-4 lg:px-6">
+      <div className={`flex min-w-0 flex-1 flex-col overflow-hidden rounded-[28px] border backdrop-blur ${mainShellClass}`}>
+        <header className={`sticky top-0 z-20 m-2 flex flex-shrink-0 items-center gap-4 rounded-2xl border px-3 py-3 backdrop-blur sm:px-4 lg:px-6 ${headerShellClass}`}>
           <button
-            className="rounded-lg p-1 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 lg:hidden"
+            className={`rounded-lg p-1 transition-colors lg:hidden ${menuButtonClass}`}
             onClick={() => setMobileOpen(true)}
           >
             <HiOutlineMenu className="text-2xl" />
@@ -379,25 +472,15 @@ export default function PerformanceLayout() {
 
           <button
             onClick={goBackToLms}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
+            className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${backButtonClass}`}
           >
             Back to LMS
           </button>
 
           <div className="flex-1" />
-
-          <div className="flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
-              {currentUser?.initials ?? "A"}
-            </div>
-            <div className="hidden text-right sm:block">
-              <p className="text-sm font-medium text-slate-800">{currentUser?.name ?? "Admin"}</p>
-              <p className="text-xs text-slate-500">{currentUser?.roleLabel ?? "Organization Admin"}</p>
-            </div>
-          </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto px-1 pb-1">
           <Outlet />
         </main>
       </div>

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { createPortal } from "react-dom";
 import { HiX } from "react-icons/hi";
 import { toast } from "react-toastify";
 import BentoCard from "../../components/common/BentoCard";
@@ -42,6 +43,9 @@ export default function ChecklistTemplatesPage() {
   const archiveTemplate = useArchiveChecklistTemplate();
 
   const templates: ChecklistTemplate[] = templatesResponse?.templates ?? [];
+  const isTemplateVisible = (template: ChecklistTemplate) =>
+    !template.isDeleted || Boolean(template.archive?.status);
+  const listableTemplates = templates.filter(isTemplateVisible);
 
   const {
     register,
@@ -52,8 +56,7 @@ export default function ChecklistTemplatesPage() {
 
   const visible = useMemo(
     () =>
-      templates
-        .filter((template) => !template.isDeleted)
+      listableTemplates
         .filter((template) => {
           if (filter === "active") return !template.archive.status;
           if (filter === "archived") return template.archive.status;
@@ -62,7 +65,7 @@ export default function ChecklistTemplatesPage() {
         .filter((template) =>
           template.name.toLowerCase().includes(search.toLowerCase())
         ),
-    [templates, filter, search]
+    [listableTemplates, filter, search]
   );
 
   const openCreate = () => {
@@ -133,20 +136,20 @@ export default function ChecklistTemplatesPage() {
       >
         <div className="mt-3 flex flex-wrap gap-2">
           <span className="rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">
-            {templates.filter((template) => !template.isDeleted).length} templates
+            {listableTemplates.length} templates
           </span>
           <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
             {
-              templates.filter(
-                (template) => !template.archive.status && !template.isDeleted
+              listableTemplates.filter(
+                (template) => !template.archive.status
               ).length
             }{" "}
             active
           </span>
           <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">
             {
-              templates.filter(
-                (template) => template.archive.status && !template.isDeleted
+              listableTemplates.filter(
+                (template) => template.archive.status
               ).length
             }{" "}
             archived
@@ -293,71 +296,74 @@ export default function ChecklistTemplatesPage() {
         </div>
       )}
 
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setIsModalOpen(false)} />
-          <div className="relative flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
-            <div className="flex items-center justify-between border-b border-slate-100 px-4 py-4 sm:px-6 sm:py-5">
-              <h2 className="text-lg font-semibold text-slate-900">
-                {editingTemplate ? "Edit Template" : "Create Template"}
-              </h2>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600"
-              >
-                <HiX className="text-xl" />
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 overflow-y-auto p-4 sm:p-6">
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                  Template Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  {...register("name", { required: "Name is required" })}
-                  placeholder="e.g. Q2 Performance Review"
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
-              </div>
-
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-slate-700">Description</label>
-                <textarea
-                  {...register("description")}
-                  placeholder="Brief description of this checklist template..."
-                  rows={3}
-                  className="w-full resize-none rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              {!editingTemplate && (
-                <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">
-                  You can add checklist items after creating the template.
-                </p>
-              )}
-
-              <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+      {isModalOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setIsModalOpen(false)} />
+            <div className="relative flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
+              <div className="flex items-center justify-between border-b border-slate-100 px-4 py-4 sm:px-6 sm:py-5">
+                <h2 className="text-lg font-semibold text-slate-900">
+                  {editingTemplate ? "Edit Template" : "Create Template"}
+                </h2>
                 <button
-                  type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 rounded-lg border border-slate-200 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                  className="text-slate-400 hover:text-slate-600"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={createTemplate.isPending || updateTemplate.isPending}
-                  className="flex-1 rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-70"
-                >
-                  {editingTemplate ? "Save Changes" : "Create Template"}
+                  <HiX className="text-xl" />
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 overflow-y-auto p-4 sm:p-6">
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                    Template Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    {...register("name", { required: "Name is required" })}
+                    placeholder="e.g. Q2 Performance Review"
+                    className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-slate-700">Description</label>
+                  <textarea
+                    {...register("description")}
+                    placeholder="Brief description of this checklist template..."
+                    rows={3}
+                    className="w-full resize-none rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                {!editingTemplate && (
+                  <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">
+                    You can add checklist items after creating the template.
+                  </p>
+                )}
+
+                <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="flex-1 rounded-lg border border-slate-200 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={createTemplate.isPending || updateTemplate.isPending}
+                    className="flex-1 rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-70"
+                  >
+                    {editingTemplate ? "Save Changes" : "Create Template"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

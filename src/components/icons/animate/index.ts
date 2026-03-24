@@ -22,3 +22,4 @@ export { EyeIcon } from "./eye-icon";
 export type { ExternalLinkIconHandle } from "./eye-icon";
 export { InfoCircleIcon } from "./info-circle-icon";
 export type { InfoCircleIconHandle } from "./info-circle-icon";
+export { ThemeModeIcon } from "./theme-mode-icon";

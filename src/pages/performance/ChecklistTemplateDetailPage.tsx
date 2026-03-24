@@ -635,19 +635,21 @@ export default function ChecklistTemplateDetailPage() {
         )}
       </div>
 
-      {itemModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setItemModalOpen(false)} />
-          <div className="relative flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl bg-white shadow-xl">
-            <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-100 px-4 py-4 sm:px-6 sm:py-5">
-              <h2 className="text-lg font-semibold text-gray-900">
-                {editingItem ? "Edit Checklist Item" : "Add Checklist Item"}
-              </h2>
-              <button onClick={() => setItemModalOpen(false)} className="text-gray-400 hover:text-gray-600">
-                <HiX className="text-xl" />
-              </button>
-            </div>
-            <form onSubmit={handleSubmit(onItemSubmit)} className="space-y-4 overflow-y-auto p-4 sm:p-6">
+      {itemModalOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setItemModalOpen(false)} />
+            <div className="relative flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl bg-white shadow-xl">
+              <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-100 px-4 py-4 sm:px-6 sm:py-5">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {editingItem ? "Edit Checklist Item" : "Add Checklist Item"}
+                </h2>
+                <button onClick={() => setItemModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+                  <HiX className="text-xl" />
+                </button>
+              </div>
+              <form onSubmit={handleSubmit(onItemSubmit)} className="space-y-4 overflow-y-auto p-4 sm:p-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Item Name <span className="text-red-500">*</span>
@@ -965,10 +967,11 @@ export default function ChecklistTemplateDetailPage() {
                   {editingItem ? "Save Changes" : "Add Item"}
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+              </form>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

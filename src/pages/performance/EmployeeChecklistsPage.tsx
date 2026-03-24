@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { createPortal } from "react-dom";
 import { HiCheck, HiOutlineArchive, HiOutlineChevronDown, HiX } from "react-icons/hi";
 import { toast } from "react-toastify";
 import BentoCard from "../../components/common/BentoCard";
@@ -562,256 +563,259 @@ export default function EmployeeChecklistsPage() {
         onRowClick={(row) => navigate(`/employee-checklists/${row.checklistId}`)}
       />
 
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setIsModalOpen(false)} />
-          <div className="relative flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
-            <div className="flex items-center justify-between border-b border-slate-100 px-4 py-4 sm:px-6 sm:py-5">
-              <div>
-                <h2 className="text-lg font-semibold text-slate-900">Assign Checklist</h2>
-                <p className="mt-0.5 text-xs text-slate-500">Assign a performance checklist to an employee</p>
+      {isModalOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setIsModalOpen(false)} />
+            <div className="relative flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
+              <div className="flex items-center justify-between border-b border-slate-100 px-4 py-4 sm:px-6 sm:py-5">
+                <div>
+                  <h2 className="text-lg font-semibold text-slate-900">Assign Checklist</h2>
+                  <p className="mt-0.5 text-xs text-slate-500">Assign a performance checklist to an employee</p>
+                </div>
+                <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+                  <HiX className="text-xl" />
+                </button>
               </div>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
-                <HiX className="text-xl" />
-              </button>
-            </div>
 
-            <form onSubmit={handleSubmit(onAssign)} className="space-y-4 overflow-y-auto p-4 sm:p-6">
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                  Employee <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="hidden"
-                  {...register("employeeId", { required: "Please select an employee" })}
-                />
-                <div ref={employeePickerRef} className="relative">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsTemplatePickerOpen(false);
-                      setIsEmployeePickerOpen((current) => {
-                        const next = !current;
-                        if (next) {
-                          setEmployeeSearch("");
-                        }
-                        return next;
-                      });
-                    }}
-                    className="flex w-full items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-left text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    aria-haspopup="listbox"
-                    aria-expanded={isEmployeePickerOpen}
-                  >
-                    <span className={selectedEmployee ? "text-slate-900" : "text-slate-500"}>
-                      {selectedEmployee?.name ?? "Select employee"}
-                    </span>
-                    <HiOutlineChevronDown
-                      className={`text-slate-400 transition-transform ${
-                        isEmployeePickerOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
+              <form onSubmit={handleSubmit(onAssign)} className="space-y-4 overflow-y-auto p-4 sm:p-6">
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                    Employee <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="hidden"
+                    {...register("employeeId", { required: "Please select an employee" })}
+                  />
+                  <div ref={employeePickerRef} className="relative">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsTemplatePickerOpen(false);
+                        setIsEmployeePickerOpen((current) => {
+                          const next = !current;
+                          if (next) {
+                            setEmployeeSearch("");
+                          }
+                          return next;
+                        });
+                      }}
+                      className="flex w-full items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-left text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      aria-haspopup="listbox"
+                      aria-expanded={isEmployeePickerOpen}
+                    >
+                      <span className={selectedEmployee ? "text-slate-900" : "text-slate-500"}>
+                        {selectedEmployee?.name ?? "Select employee"}
+                      </span>
+                      <HiOutlineChevronDown
+                        className={`text-slate-400 transition-transform ${
+                          isEmployeePickerOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
 
-                  {isEmployeePickerOpen && (
-                    <div className="absolute z-30 mt-1 w-full rounded-lg border border-slate-200 bg-white shadow-lg">
-                      <div className="border-b border-slate-100 p-2">
-                        <input
-                          type="text"
-                          value={employeeSearch}
-                          autoFocus
-                          onChange={(event) => setEmployeeSearch(event.target.value)}
-                          onKeyDown={(event) => {
-                            if (event.key === "Escape") {
-                              setIsEmployeePickerOpen(false);
-                            }
-                          }}
-                          placeholder="Search employee name"
-                          className="w-full rounded-md border border-slate-200 px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
+                    {isEmployeePickerOpen && (
+                      <div className="absolute z-30 mt-1 w-full rounded-lg border border-slate-200 bg-white shadow-lg">
+                        <div className="border-b border-slate-100 p-2">
+                          <input
+                            type="text"
+                            value={employeeSearch}
+                            autoFocus
+                            onChange={(event) => setEmployeeSearch(event.target.value)}
+                            onKeyDown={(event) => {
+                              if (event.key === "Escape") {
+                                setIsEmployeePickerOpen(false);
+                              }
+                            }}
+                            placeholder="Search employee name"
+                            className="w-full rounded-md border border-slate-200 px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div className="max-h-56 overflow-y-auto py-1" role="listbox">
+                          {isUsersLoading && (
+                            <p className="px-3 py-2 text-sm text-slate-500">Loading employees...</p>
+                          )}
+                          {!isUsersLoading && filteredEmployeeOptions.length === 0 && (
+                            <p className="px-3 py-2 text-sm text-slate-500">No employee found</p>
+                          )}
+                          {!isUsersLoading &&
+                            filteredEmployeeOptions.map((employee) => {
+                              const isSelected = selectedEmployeeId === employee.id;
+                              return (
+                                <button
+                                  key={employee.id}
+                                  type="button"
+                                  onClick={() => {
+                                    setValue("employeeId", employee.id, {
+                                      shouldDirty: true,
+                                      shouldValidate: true,
+                                    });
+                                    clearErrors("employeeId");
+                                    setEmployeeSearch("");
+                                    setIsEmployeePickerOpen(false);
+                                  }}
+                                  className={`block w-full px-3 py-2 text-left text-sm transition-colors ${
+                                    isSelected
+                                      ? "bg-blue-50 text-blue-700"
+                                      : "text-slate-700 hover:bg-slate-50"
+                                  }`}
+                                  role="option"
+                                  aria-selected={isSelected}
+                                >
+                                  {employee.name}
+                                </button>
+                              );
+                            })}
+                        </div>
                       </div>
-                      <div className="max-h-56 overflow-y-auto py-1" role="listbox">
-                        {isUsersLoading && (
-                          <p className="px-3 py-2 text-sm text-slate-500">Loading employees...</p>
-                        )}
-                        {!isUsersLoading && filteredEmployeeOptions.length === 0 && (
-                          <p className="px-3 py-2 text-sm text-slate-500">No employee found</p>
-                        )}
-                        {!isUsersLoading &&
-                          filteredEmployeeOptions.map((employee) => {
-                            const isSelected = selectedEmployeeId === employee.id;
-                            return (
-                              <button
-                                key={employee.id}
-                                type="button"
-                                onClick={() => {
-                                  setValue("employeeId", employee.id, {
-                                    shouldDirty: true,
-                                    shouldValidate: true,
-                                  });
-                                  clearErrors("employeeId");
-                                  setEmployeeSearch("");
-                                  setIsEmployeePickerOpen(false);
-                                }}
-                                className={`block w-full px-3 py-2 text-left text-sm transition-colors ${
-                                  isSelected
-                                    ? "bg-blue-50 text-blue-700"
-                                    : "text-slate-700 hover:bg-slate-50"
-                                }`}
-                                role="option"
-                                aria-selected={isSelected}
-                              >
-                                {employee.name}
-                              </button>
-                            );
-                          })}
-                      </div>
-                    </div>
+                    )}
+                  </div>
+                  {errors.employeeId && (
+                    <p className="mt-1 text-xs text-red-500">{errors.employeeId.message}</p>
                   )}
                 </div>
-                {errors.employeeId && (
-                  <p className="mt-1 text-xs text-red-500">{errors.employeeId.message}</p>
-                )}
-              </div>
 
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                  Checklist Template <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="hidden"
-                  {...register("checklistTemplateId", {
-                    required: "Please select a template",
-                  })}
-                />
-                <div ref={templatePickerRef} className="relative">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsEmployeePickerOpen(false);
-                      setIsTemplatePickerOpen((current) => {
-                        const next = !current;
-                        if (next) {
-                          setTemplateSearch("");
-                        }
-                        return next;
-                      });
-                    }}
-                    className="flex w-full items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-left text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    aria-haspopup="listbox"
-                    aria-expanded={isTemplatePickerOpen}
-                  >
-                    <span className={selectedTemplate ? "text-slate-900" : "text-slate-500"}>
-                      {selectedTemplate
-                        ? `${selectedTemplate.name} (${selectedTemplate.items.length} items)`
-                        : "Select template"}
-                    </span>
-                    <HiOutlineChevronDown
-                      className={`text-slate-400 transition-transform ${
-                        isTemplatePickerOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                    Checklist Template <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="hidden"
+                    {...register("checklistTemplateId", {
+                      required: "Please select a template",
+                    })}
+                  />
+                  <div ref={templatePickerRef} className="relative">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsEmployeePickerOpen(false);
+                        setIsTemplatePickerOpen((current) => {
+                          const next = !current;
+                          if (next) {
+                            setTemplateSearch("");
+                          }
+                          return next;
+                        });
+                      }}
+                      className="flex w-full items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-left text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      aria-haspopup="listbox"
+                      aria-expanded={isTemplatePickerOpen}
+                    >
+                      <span className={selectedTemplate ? "text-slate-900" : "text-slate-500"}>
+                        {selectedTemplate
+                          ? `${selectedTemplate.name} (${selectedTemplate.items.length} items)`
+                          : "Select template"}
+                      </span>
+                      <HiOutlineChevronDown
+                        className={`text-slate-400 transition-transform ${
+                          isTemplatePickerOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
 
-                  {isTemplatePickerOpen && (
-                    <div className="absolute z-30 mt-1 w-full rounded-lg border border-slate-200 bg-white shadow-lg">
-                      <div className="border-b border-slate-100 p-2">
-                        <input
-                          type="text"
-                          value={templateSearch}
-                          autoFocus
-                          onChange={(event) => setTemplateSearch(event.target.value)}
-                          onKeyDown={(event) => {
-                            if (event.key === "Escape") {
-                              setIsTemplatePickerOpen(false);
-                            }
-                          }}
-                          placeholder="Search template name"
-                          className="w-full rounded-md border border-slate-200 px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div className="max-h-56 overflow-y-auto py-1" role="listbox">
-                        {isTemplatesLoading && (
-                          <p className="px-3 py-2 text-sm text-slate-500">Loading templates...</p>
-                        )}
-                        {!isTemplatesLoading && filteredTemplateOptions.length === 0 && (
-                          <p className="px-3 py-2 text-sm text-slate-500">No template found</p>
-                        )}
-                        {!isTemplatesLoading &&
-                          filteredTemplateOptions.map((template) => {
-                            const isSelected = selectedTemplateId === template._id;
-                            return (
-                              <button
-                                key={template._id}
-                                type="button"
-                                onClick={() => {
-                                  setValue("checklistTemplateId", template._id, {
-                                    shouldDirty: true,
-                                    shouldValidate: true,
-                                  });
-                                  clearErrors("checklistTemplateId");
-                                  setTemplateSearch("");
-                                  setIsTemplatePickerOpen(false);
-                                }}
-                                className={`flex w-full items-start justify-between px-3 py-2 text-left text-sm transition-colors ${
-                                  isSelected
-                                    ? "bg-blue-50 text-blue-700"
-                                    : "text-slate-700 hover:bg-slate-50"
-                                }`}
-                                role="option"
-                                aria-selected={isSelected}
-                              >
-                                <span>
-                                  <span className="block font-medium">{template.name}</span>
-                                  <span className="block text-xs text-slate-500">
-                                    {template.items.length} items
+                    {isTemplatePickerOpen && (
+                      <div className="absolute z-30 mt-1 w-full rounded-lg border border-slate-200 bg-white shadow-lg">
+                        <div className="border-b border-slate-100 p-2">
+                          <input
+                            type="text"
+                            value={templateSearch}
+                            autoFocus
+                            onChange={(event) => setTemplateSearch(event.target.value)}
+                            onKeyDown={(event) => {
+                              if (event.key === "Escape") {
+                                setIsTemplatePickerOpen(false);
+                              }
+                            }}
+                            placeholder="Search template name"
+                            className="w-full rounded-md border border-slate-200 px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div className="max-h-56 overflow-y-auto py-1" role="listbox">
+                          {isTemplatesLoading && (
+                            <p className="px-3 py-2 text-sm text-slate-500">Loading templates...</p>
+                          )}
+                          {!isTemplatesLoading && filteredTemplateOptions.length === 0 && (
+                            <p className="px-3 py-2 text-sm text-slate-500">No template found</p>
+                          )}
+                          {!isTemplatesLoading &&
+                            filteredTemplateOptions.map((template) => {
+                              const isSelected = selectedTemplateId === template._id;
+                              return (
+                                <button
+                                  key={template._id}
+                                  type="button"
+                                  onClick={() => {
+                                    setValue("checklistTemplateId", template._id, {
+                                      shouldDirty: true,
+                                      shouldValidate: true,
+                                    });
+                                    clearErrors("checklistTemplateId");
+                                    setTemplateSearch("");
+                                    setIsTemplatePickerOpen(false);
+                                  }}
+                                  className={`flex w-full items-start justify-between px-3 py-2 text-left text-sm transition-colors ${
+                                    isSelected
+                                      ? "bg-blue-50 text-blue-700"
+                                      : "text-slate-700 hover:bg-slate-50"
+                                  }`}
+                                  role="option"
+                                  aria-selected={isSelected}
+                                >
+                                  <span>
+                                    <span className="block font-medium">{template.name}</span>
+                                    <span className="block text-xs text-slate-500">
+                                      {template.items.length} items
+                                    </span>
                                   </span>
-                                </span>
-                                {isSelected && <HiCheck className="mt-0.5 text-sm" />}
-                              </button>
-                            );
-                          })}
+                                  {isSelected && <HiCheck className="mt-0.5 text-sm" />}
+                                </button>
+                              );
+                            })}
+                        </div>
                       </div>
-                    </div>
+                    )}
+                  </div>
+                  {errors.checklistTemplateId && (
+                    <p className="mt-1 text-xs text-red-500">{errors.checklistTemplateId.message}</p>
                   )}
                 </div>
-                {errors.checklistTemplateId && (
-                  <p className="mt-1 text-xs text-red-500">{errors.checklistTemplateId.message}</p>
-                )}
-              </div>
 
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-slate-700">Due Date</label>
-                <input
-                  type="date"
-                  {...register("dueDate")}
-                  min={new Date().toISOString().split("T")[0]}
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <p className="mt-1 text-xs text-slate-400">Optional. Leave blank for no deadline.</p>
-              </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-slate-700">Due Date</label>
+                  <input
+                    type="date"
+                    {...register("dueDate")}
+                    min={new Date().toISOString().split("T")[0]}
+                    className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <p className="mt-1 text-xs text-slate-400">Optional. Leave blank for no deadline.</p>
+                </div>
 
-              <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsModalOpen(false);
-                    reset();
-                  }}
-                  className="flex-1 rounded-lg border border-slate-200 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
-                >
-                  Assign Checklist
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+                <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      reset();
+                    }}
+                    className="flex-1 rounded-lg border border-slate-200 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+                  >
+                    Assign Checklist
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

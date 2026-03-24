@@ -11,11 +11,11 @@ const resolveLmsAppUrl = () => {
     return HOSTED_LMS_APP_URL;
   }
 
-  const fallback = isLocalhostHost(window.location.hostname)
-    ? LOCAL_LMS_APP_URL
-    : HOSTED_LMS_APP_URL;
+  if (isLocalhostHost(window.location.hostname)) {
+    return LOCAL_LMS_APP_URL;
+  }
 
-  return import.meta.env.VITE_LMS_APP_URL || fallback;
+  return import.meta.env.VITE_LMS_APP_URL || HOSTED_LMS_APP_URL;
 };
 
 export default function UnauthorizedPage() {
@@ -92,4 +92,3 @@ export default function UnauthorizedPage() {
     </div>
   );
 }
-
